@@ -1,5 +1,5 @@
-/.vscode
-/__pycache__
-/chromedriver-win64
-/output
-/output_raw
+.vscode
+__pycache__
+chromedriver-win64
+output
+output_raw
