@@ -6,7 +6,7 @@ from utility import genDetailDoc
 
 enableAI = 1  # 是否开启AI生成报告功能
 
-apiKey = "sk-ae9b5b3ec02b430c93a0d96c51742c2d"
+apiKey = "your-api-key"
 apiUrl = "https://api.deepseek.com"
 modelName = "deepseek-chat"
 
