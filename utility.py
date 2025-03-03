@@ -1,3 +1,5 @@
+import os
+from openai import OpenAI
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -113,6 +115,29 @@ def genRawDoc(driver: webdriver.Chrome, debug: bool = 0):
     print("{} 生成完毕".format(cveName), end="   ")
 
 
-# 接入openAPi生成报告
-def genDetailDoc():
-    pass
+# 接入openAi生成报告
+
+prompt = "假设你是一名安全专家，请根据以下信息生成漏洞报告："
+
+
+def genDetailDoc(apiKey: str, modelName: str, apiUrl: str, deleteOldReport: bool = 0):
+    '''
+    Api遵循openai-Api格式\n
+    deleteOldReport为1则在生成报告后删除先前爬取的原始文件
+    '''
+    client = OpenAI(api_key=apiKey, base_url=apiUrl)
+    for file in os.listdir("./output_raw"):
+        if file.endswith(".md"):
+            filePath = os.path.join("./output_raw", file)
+            with open(filePath, "r", encoding="utf-8") as f:
+                content = f.read()
+                print("正在处理 :{}".format(file))
+                response = client.chat.completions.create(model=modelName,
+                                                          messages=[{"role": "system", "content": prompt},
+                                                                    {"role": "user", "content": content}],
+                                                          stream=False)
+                with open("./output/{}".format(file), "w", encoding="utf-8") as f:
+                    f.write(response.choices[0].message.content)
+                print("处理完毕 :{}".format(file))
+            if deleteOldReport:
+                os.remove(filePath)
